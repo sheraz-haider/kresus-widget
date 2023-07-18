@@ -52,7 +52,7 @@ const Index = () => {
           <div class='buttonwrap'>
             <button
               id='kresus'
-              data-aid=''
+              data-aid='YDnYlG'
               class='createbtn selectedbtn'
               onClick={() => setModalOpen(true)}
             >
