@@ -5,7 +5,7 @@ import Success from './Components/Success';
 import EmailInput from './Components/EmailInput';
 import Stepper from './Components/Stepper';
 
-const Form = () => {
+const Form = ({ setModalOpen }) => {
   const [step, setStep] = useState(0);
   const [email, setEmail] = useState('');
   const [token, setToken] = useState('');
@@ -13,7 +13,9 @@ const Form = () => {
     <div className='form-container'>
       {/* header */}
       <div className='header'>
-        <div className='icon-container'>
+        <div className='icon-container' onClick={() => {
+          setModalOpen(false);
+        }}>
           <img src={assets.close} alt='' />
         </div>
         <div className='logo'>

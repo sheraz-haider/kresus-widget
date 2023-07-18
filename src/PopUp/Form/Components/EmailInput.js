@@ -43,7 +43,7 @@ const EmailInput = ({ setStep, setEmail, email, setToken }) => {
       </p>
       <form onSubmit={handleClick}>
         <div className='input-container'>
-          <input type='text' value={email} onChange={handleChange} />
+          <input type='text' value={email} onChange={handleChange} placeholder='Please enter email' />
           {error && <p className='error'>{error}</p>}
         </div>
         <button className='submit-button' disabled={disalbed} type='submit'>

@@ -2,14 +2,19 @@ import React from 'react';
 
 import assets from '../../assets';
 
-const Main = ({ setStep }) => {
+const Main = ({ setStep, setModalOpen }) => {
   const handleClick = () => {
     setStep(1);
   };
   return (
     <div className='main-screen'>
       <div className='close-icon-container'>
-        <div className='close-icon'>
+        <div
+          className='close-icon'
+          onClick={() => {
+            setModalOpen(false);
+          }}
+        >
           <img src={assets.close} width={20} height={20} alt='' />
         </div>
       </div>
@@ -24,12 +29,7 @@ const Main = ({ setStep }) => {
           </h1>
         </div>
         <div className='qr-code'>
-          <img
-            src={assets.qrCode}
-            style={{ borderRadius: '20px' }}
-            height={200}
-            alt=''
-          />
+          <img src={assets.qrCode} style={{ borderRadius: '20px' }} height={200} alt='' />
         </div>
       </div>
       <div className='footer'>
