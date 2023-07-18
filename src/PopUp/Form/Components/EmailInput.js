@@ -28,7 +28,7 @@ const EmailInput = ({ setStep, setEmail, email, setToken }) => {
     }
   };
   useEffect(() => {
-    if (/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(email)) {
+    if (/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/g.test(email)) {
       setDisabled(false);
     } else {
       setDisabled(true);
@@ -38,8 +38,8 @@ const EmailInput = ({ setStep, setEmail, email, setToken }) => {
     <div className='email-input'>
       <h1 className='title'>What's your email address?</h1>
       <p className='description'>
-        We'll send you a verification code to confirm your identity and set up
-        your new Kresus Wallet.
+        We'll send you a verification code to confirm your identity and set up your new Kresus
+        Wallet.
       </p>
       <form onSubmit={handleClick}>
         <div className='input-container'>

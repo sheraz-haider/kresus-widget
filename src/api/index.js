@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://192.168.100.10:5002/v1/',
+  baseURL: 'https://kresus.99starzplayers.com/v1/',
 });
 
 export const signup = data => api.post('/auth/signup', data);
