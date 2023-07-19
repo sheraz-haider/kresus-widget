@@ -5,20 +5,15 @@ document.addEventListener("DOMContentLoaded", function (e) {
   let button = document.getElementById("kresus");
   if (button) {
     button.addEventListener("click", function (e) {
-      const modalId = this.getAttribute("data-aid");
+      const appContainer = document.getElementsByTagName("body");
+      const tempContainer = document.createElement("div");
+      tempContainer.innerHTML = mainForm();
+      tempContainer.id = "kresus_temp_container";
+      appContainer[0].appendChild(tempContainer);
 
-      if (modalId === "345iuhsdf") {
-        const appContainer = document.getElementsByTagName("body");
-        const tempContainer = document.createElement("div");
-        tempContainer.innerHTML = mainForm();
-        tempContainer.id = "kresus_temp_container";
-        appContainer[0].appendChild(tempContainer);
-
-        const modal_kresus_inner =
-          document.getElementById("modal_kresus_inner");
-        if (modal_kresus_inner) {
-          modal_kresus_inner.innerHTML = Modal();
-        }
+      const modal_kresus_inner = document.getElementById("modal_kresus_inner");
+      if (modal_kresus_inner) {
+        modal_kresus_inner.innerHTML = Modal();
       }
     });
   }
@@ -69,51 +64,6 @@ function handleChange() {
     submitButton.disabled = true;
   }
 }
-
-function Modal() {
-  return `
-  <div class="main-screen">
-  <div class="close-icon-container">
-    <div class="close-icon">
-      <img src="https://kresus-widget.vercel.app/widget/assets/icon/close.svg" onclick={handleClose()} width="20" height="20" alt="" />
-    </div>
-  </div>
-  <div class="content">
-    <div class="logo">
-      <img src="https://kresus-widget.vercel.app/widget/assets/icon/logo.webp" alt="" />
-    </div>
-    <div class="title">
-      <h1>
-        Scan with your kresus wallet
-        <br /> to connect
-      </h1>
-    </div>
-    <div class="qr-code">
-      <img src="https://kresus-widget.vercel.app/widget/assets/icon/qrCode.png" style="border-radius: 20px;" height="200" alt="" />
-    </div>
-  </div>
-  <div class="footer">
-    <div>
-      <button class="apple-store-button">
-        <img src="https://kresus-widget.vercel.app/widget/assets/icon/appleLogo.svg" alt="" />
-      </button>
-    </div>
-    <div class="description">
-      <p>
-        <b>Don't have Kresus?</b> Get the best-in-class wallet to
-        <br /> hold all of your digital collectibles
-      </p>
-    </div>
-    <div>
-      <button class="get-wallet-btn" onclick="handleClick(0)">
-        Get my free wallet
-      </button>
-    </div>
-  </div>
-</div>
-  `;
-}
-
 const handleSubmit = async (e) => {
   e.preventDefault();
   let check = true;
@@ -131,11 +81,11 @@ const handleSubmit = async (e) => {
       submitButton.disabled = true;
     }
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const dapp_id = urlParams.get("dapp_id");
+    let button = document.getElementById("kresus");
+    const data_aid = button.getAttribute("data-aid"); //this.getAttribute("data-aid");
 
     const body = JSON.stringify({
-      dapp_id: "mbqi9U",
+      dapp_id: data_aid, //"mbqi9U",
       email: emailInput.value.trim(),
     });
 
@@ -183,6 +133,137 @@ const handleClose = () => {
   }
 };
 
+// For OPT start
+
+function OPTHandle() {
+  const inputs = document.querySelectorAll(".otp-field-js input");
+
+  inputs.forEach((input, index) => {
+    input.dataset.index = index;
+    input.addEventListener("keyup", handleOtp);
+    input.addEventListener("paste", handleOnPasteOtp);
+  });
+}
+
+function handleOtp(e) {
+  const inputs = document.querySelectorAll(".otp-field-js input");
+  const input = e.target;
+  let value = input.value;
+  let isValidInput = value.match(/[0-9a-z]/gi);
+  input.value = "";
+  input.value = isValidInput ? value[0] : "";
+
+  let fieldIndex = input.dataset.index;
+  if (fieldIndex < inputs.length - 1 && isValidInput) {
+    input.nextElementSibling.focus();
+  }
+
+  if (e.key === "Backspace" && fieldIndex > 0) {
+    input.previousElementSibling.focus();
+  }
+
+  if (fieldIndex == inputs.length - 1 && isValidInput) {
+    submit();
+  }
+}
+
+function handleOnPasteOtp(e) {
+  const inputs = document.querySelectorAll(".otp-field-js input");
+  const data = e.clipboardData.getData("text");
+  const value = data.split("");
+  if (value.length === inputs.length) {
+    inputs.forEach((input, index) => (input.value = value[index]));
+    submit();
+  }
+}
+
+function submit() {
+  console.log("Submitting...");
+  const inputs = document.querySelectorAll(".otp-field-js input");
+  // 👇 Entered OTP
+  let otp = "";
+  inputs.forEach((input) => {
+    otp += input.value;
+    input.disabled = true;
+    input.classList.add("disabled");
+  });
+  handleVerify(otp);
+}
+
+const handleVerify = async (otp) => {
+  const kresusOptError = document.getElementById("kresus-opt-error");
+  try {
+    if (kresusOptError) {
+      kresusOptError.innerHTML = "";
+    }
+    const apiData = JSON.stringify({ code: otp });
+    let response = await fetch(`${baseURL}/auth/email-verification/${token}`, {
+      method: "POST",
+      body: apiData,
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    });
+    response = await response.json();
+    if (response.message !== "Email Verified Successfully") {
+      if (kresusOptError) {
+        kresusOptError.innerHTML = response.message;
+      }
+    } else {
+      await handleClick(2);
+    }
+  } catch (err) {
+    if (kresusOptError) {
+      kresusOptError.innerHTML = err.response.data.message;
+    }
+  }
+};
+
+// For OPT End
+
+function Modal() {
+  return `
+  <div class="main-screen">
+  <div class="close-icon-container">
+    <div class="close-icon">
+      <img src="https://kresus-widget.vercel.app/widget/assets/icon/close.svg" onclick={handleClose()} width="20" height="20" alt="" />
+    </div>
+  </div>
+  <div class="content">
+    <div class="logo">
+      <img src="https://kresus-widget.vercel.app/widget/assets/icon/logo.webp" alt="" />
+    </div>
+    <div class="title">
+      <h1>
+        Scan with your kresus wallet
+        <br /> to connect
+      </h1>
+    </div>
+    <div class="qr-code">
+      <img src="https://kresus-widget.vercel.app/widget/assets/icon/qrCode.png" style="border-radius: 20px;" height="200" alt="" />
+    </div>
+  </div>
+  <div class="footer">
+    <div>
+      <button class="apple-store-button">
+        <img src="https://kresus-widget.vercel.app/widget/assets/icon/appleLogo.svg" alt="" />
+      </button>
+    </div>
+    <div class="description">
+      <p>
+        <b>Don't have Kresus?</b> Get the best-in-class wallet to
+        <br /> hold all of your digital collectibles
+      </p>
+    </div>
+    <div>
+      <button class="get-wallet-btn" onclick="handleClick(0)">
+        Get my free wallet
+      </button>
+    </div>
+  </div>
+</div>
+  `;
+}
 function mainForm() {
   return `
   <div class="overly-container" id="kresus_overly_container">
@@ -349,89 +430,3 @@ function Success() {
 </div>
   `;
 }
-
-// For OPT
-
-function OPTHandle() {
-  const inputs = document.querySelectorAll(".otp-field-js input");
-
-  inputs.forEach((input, index) => {
-    input.dataset.index = index;
-    input.addEventListener("keyup", handleOtp);
-    input.addEventListener("paste", handleOnPasteOtp);
-  });
-}
-
-function handleOtp(e) {
-  const inputs = document.querySelectorAll(".otp-field-js input");
-  const input = e.target;
-  let value = input.value;
-  let isValidInput = value.match(/[0-9a-z]/gi);
-  input.value = "";
-  input.value = isValidInput ? value[0] : "";
-
-  let fieldIndex = input.dataset.index;
-  if (fieldIndex < inputs.length - 1 && isValidInput) {
-    input.nextElementSibling.focus();
-  }
-
-  if (e.key === "Backspace" && fieldIndex > 0) {
-    input.previousElementSibling.focus();
-  }
-
-  if (fieldIndex == inputs.length - 1 && isValidInput) {
-    submit();
-  }
-}
-
-function handleOnPasteOtp(e) {
-  const inputs = document.querySelectorAll(".otp-field-js input");
-  const data = e.clipboardData.getData("text");
-  const value = data.split("");
-  if (value.length === inputs.length) {
-    inputs.forEach((input, index) => (input.value = value[index]));
-    submit();
-  }
-}
-
-function submit() {
-  console.log("Submitting...");
-  const inputs = document.querySelectorAll(".otp-field-js input");
-  // 👇 Entered OTP
-  let otp = "";
-  inputs.forEach((input) => {
-    otp += input.value;
-    input.disabled = true;
-    input.classList.add("disabled");
-  });
-  handleVerify(otp);
-}
-
-const handleVerify = async (otp) => {
-  const kresusOptError = document.getElementById("kresus-opt-error");
-  try {
-    if (kresusOptError) {
-      kresusOptError.innerHTML = "";
-    }
-    const apiData = JSON.stringify({ code: otp });
-    let response = await fetch(`${baseURL}/auth/email-verification/${token}`, {
-      method: "POST",
-      body: apiData,
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-      },
-    });
-    response = await response.json();
-    if (response.message !== "Email Verified Successfully") {
-      if (kresusOptError) {
-        kresusOptError.innerHTML = response.message;
-      }
-    } else {
-      await handleClick(2);
-    }
-  } catch (err) {
-    if (kresusOptError) {
-      kresusOptError.innerHTML = err.response.data.message;
-    }
-  }
-};
