@@ -367,7 +367,7 @@ function EmailInput() {
   </p>
   <form onsubmit="handleSubmit(event)">
     <div class="input-container">
-      <input type="text" value="" id="email_Input" oninput="handleChange()" />
+      <input type="text" value="" id="email_Input" oninput="handleChange()" placeholder="Please enter email" />
       <p class="error" id="error_message_email_Input"></p>
     </div>
     <button
