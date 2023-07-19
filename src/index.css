@@ -367,3 +367,34 @@
   width: 100%;
   cursor: pointer;
 }
+
+/* For JS OTP Styling */
+.otp-field-js {
+  display: flex;
+}
+.otp-field-js input {
+  width: 55px;
+  height: 55px;
+  font-size: 25px;
+  padding: 10px;
+  text-align: center;
+  border-radius: 5px;
+  margin: 2px;
+  border: 1px solid #0000001a;
+  /* background: white; */
+  font-weight: bold;
+  color: #080d4c;
+  outline: none;
+  transition: all 0.1s;
+  caret-color: #080d4c;
+}
+.otp-field-js input:focus {
+  border: 2px solid #a527ff;
+  box-shadow: 0 0 2px 2px #a527ff6a;
+}
+.disabled {
+  opacity: 0.5;
+}
+.space {
+  margin-right: 1rem !important;
+}
