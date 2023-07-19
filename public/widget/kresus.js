@@ -3,6 +3,14 @@ let token = "";
 
 document.addEventListener("DOMContentLoaded", function (e) {
   let button = document.getElementById("kresus");
+
+  var head = document.getElementsByTagName("HEAD")[0];
+  let link = document.createElement("link");
+  link.rel = "stylesheet";
+  link.type = "text/css";
+  link.href = "https://kresus-widget.vercel.app/widget/kresus.css ";
+  head.appendChild(link);
+
   if (button) {
     button.addEventListener("click", function (e) {
       const appContainer = document.getElementsByTagName("body");
